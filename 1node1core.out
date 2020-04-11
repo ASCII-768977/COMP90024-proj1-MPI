@@ -1,0 +1,32 @@
+-------------------------
+Rank 0 start at: 0
+Rank 0  end  at: 20761096558
+Rank 0, gather result and do sort:
+-------------------------
+1.#auspol,35056
+2.#coronavirus,17671
+3.#มาพ่องเพิ่งอะไร,15060
+4.#firefightaustralia,12996
+5.#oldme,12776
+6.#grammys,10114
+7.#assange,9252
+8.#scottyfrommarketing,8587
+9.#sydney,8393
+10.#เป๊กผลิตโชค,8130
+-------------------------
+1.English(en),3107116
+2.Undefined(und),252117
+3.Thai(th),134571
+4.Portuguese(pt),125858
+5.Spanish(es),74028
+6.Japanese(ja),49929
+7.Tagalog(tl),44560
+8.Indonesian(in),42296
+9.French(fr),38098
+10.Arabic(ar),24501
+-------------------------
+Rank 0 Program Running Time: 0:10:20.247002 Seconds
+
+real	10m20.669s
+user	9m57.775s
+sys	0m22.442s

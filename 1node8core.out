@@ -1,0 +1,60 @@
+-------------------------
+Rank 5 start at: 12975685345
+Rank 5  end  at: 15570822414
+-------------------------
+Rank 7 start at: 18165959483
+Rank 7  end  at: 20761096558
+-------------------------
+Rank 0 start at: 0
+Rank 0  end  at: 2595137069
+-------------------------
+Rank 4 start at: 10380548276
+Rank 4  end  at: 12975685345
+-------------------------
+Rank 2 start at: 5190274138
+Rank 2  end  at: 7785411207
+-------------------------
+Rank 3 start at: 7785411207
+Rank 3  end  at: 10380548276
+-------------------------
+Rank 6 start at: 15570822414
+Rank 6  end  at: 18165959483
+-------------------------
+Rank 1 start at: 2595137069
+Rank 1  end  at: 5190274138
+Rank 7 Program Running Time: 0:01:12.122310 Seconds
+Rank 5 Program Running Time: 0:01:12.935877 Seconds
+Rank 6 Program Running Time: 0:01:13.807626 Seconds
+Rank 2 Program Running Time: 0:01:21.118190 Seconds
+Rank 4 Program Running Time: 0:01:28.215309 Seconds
+Rank 3 Program Running Time: 0:01:28.215704 Seconds
+Rank 1 Program Running Time: 0:01:28.214231 Seconds
+Rank 0, gather result and do sort:
+-------------------------
+1.#auspol,35056
+2.#coronavirus,17167
+3.#มาพ่องเพิ่งอะไร,15054
+4.#firefightaustralia,12206
+5.#oldme,12166
+6.#grammys,10039
+7.#assange,8201
+8.#scottyfrommarketing,4814
+9.#btsarmy,4677
+10.#taehyung,4665
+-------------------------
+1.English(en),3107116
+2.Undefined(und),252117
+3.Thai(th),134571
+4.Portuguese(pt),125858
+5.Spanish(es),74028
+6.Japanese(ja),49929
+7.Tagalog(tl),44560
+8.Indonesian(in),42296
+9.French(fr),30849
+10.Arabic(ar),12400
+-------------------------
+Rank 0 Program Running Time: 0:01:28.216815 Seconds
+
+real	1m28.749s
+user	10m18.429s
+sys	0m36.912s
