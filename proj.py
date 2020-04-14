@@ -4,18 +4,16 @@ from datetime import datetime
 from collections import Counter
 import os
 
-# count = len(file.readlines())
-# offset = length () / size
-
-# path = "/Users/linyuming/Desktop/test.json"
-# path = "/Users/linyuming/Desktop/smallTwitter.json"
 path = "/home/yumingl/bigTwitter.json"
 
+#initial MPI, and record time
+initMpiStart = datetime.now()
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
+initMpiEnd = datetime.now()
 
-
+# a language dict
 languageDict = {'am': 'Amharic', 'hu': 'Hungarian', 'pt': 'Portuguese', 'ar': 'Arabic',
                 'is': 'Icelandic', 'ro': 'Romanian', 'hy': 'Armenian', 'in': 'Indonesian',
                 'ru': 'Russian', 'bn': 'Bengali', 'it': 'Italian', 'sr': 'Serbian',
@@ -34,164 +32,140 @@ languageDict = {'am': 'Amharic', 'hu': 'Hungarian', 'pt': 'Portuguese', 'ar': 'A
                 'hi': 'Hindi', 'pl': 'Polish', 'vi': 'Vietnamese', 'cy': 'Welsh',
                 'und': 'Undefined'}
 
-
+# split the file in to chunks
 def fileSplit():
-    # 返回文件大小，如果文件不存在就返回错误
+    # return the filesize
     fileSize = os.path.getsize(path)
-    # 单个文件按照总线程数量分
+    # divide the file with rank sum num
     singleSize = fileSize // size
-    # 生成一个list，里面包含了每段的文件大小，[0,100,200,300,400,500]
+    # generate a list with offsets，for example:[0,100,200,300,400,500]
     offsetList = []
     for i in range(size):
         offsetList.append(i * singleSize)
     offsetList.append(fileSize)
     return offsetList
 
-
+# fliter the data in json that we need
 def stasticData(jsonLine, hashtag, language):
-    # 如果存在hashtag这个标签，判断是否在字典中有key存在。然后计数，如不存在则设为初始值1，如果存在，则对应value统计+1
-    if jsonLine['doc']['entities']['hashtags'] != []:
-        tagElem1 = jsonLine['doc']['entities']['hashtags']
-        for i in range(0,len(tagElem1)):
-            if tagElem1[i]['text'].lower() not in hashtag.keys():
-                hashtag[tagElem1[i]['text'].lower()] = 1
-            else:
-                hashtag[tagElem1[i]['text'].lower()] += 1
-    # 判断语言
-    if jsonLine['doc']['metadata']['iso_language_code'] != []:
-        tagElem2 = jsonLine['doc']['metadata']['iso_language_code']
-        if tagElem2.lower() not in language.keys():
-            language[tagElem2.lower()] = 1
-        else:
-            language[tagElem2.lower()] += 1
-    # 判断转发
-    if 'retweeted_status' in jsonLine['doc']:
-        tagElem3 = jsonLine['doc']['retweeted_status']['entities']['hashtags']
-        if tagElem3 != []:
-            for i in range(0, len(tagElem3)):
-                if tagElem3[i]['text'].lower() not in hashtag.keys():
-                    hashtag[tagElem3[i]['text'].lower()] = 1
-                else:
-                    hashtag[tagElem3[i]['text'].lower()] += 1
-    # 判断引用
+    tagElem1 = jsonLine['doc']['entities']['hashtags']
+    for i in range(0, len(tagElem1)):
+        hashtag.append(tagElem1[i]['text'].lower())
+
+    language.append(jsonLine['doc']['metadata']['iso_language_code'])
+
     if 'quoted_status' in jsonLine['doc']:
-        if jsonLine['doc']['quoted_status']['entities']['hashtags'] != []:
-            tagElem4 = jsonLine['doc']['quoted_status']['entities']['hashtags']
-            for i in range(0,len(tagElem4)):
-                if tagElem4[i]['text'].lower() not in hashtag.keys():
-                    hashtag[tagElem4[i]['text'].lower()] = 1
-                else:
-                    hashtag[tagElem4[i]['text'].lower()] += 1
-    #判断转发中的引用
+        tagElem3 = jsonLine['doc']['quoted_status']['entities']['hashtags']
+        for i in range(0, len(tagElem3)):
+            hashtag.append(tagElem3[i]['text'].lower())
+        language.append(jsonLine['doc']['quoted_status']['metadata']['iso_language_code'])
+
     if 'retweeted_status' in jsonLine['doc']:
+
+        tagElem2 = jsonLine['doc']['retweeted_status']['entities']['hashtags']
+        for i in range(0, len(tagElem2)):
+            hashtag.append(tagElem2[i]['text'].lower())
+        language.append((jsonLine['doc']['retweeted_status']['metadata']['iso_language_code']))
+
         if 'quoted_status' in jsonLine['doc']['retweeted_status']:
-            if jsonLine['doc']['retweeted_status']['quoted_stutes']['entities']['hashtags'] != []:
-                tagElem5 = jsonLine['doc']['retweeted_status']['quoted_stutes']['entities']['hashtags']
-                for i in range(0,len(tagElem5)):
-                    if tagElem5[i]['text'].lower() not in hashtag.keys():
-                        hashtag[tagElem5[i]['text'].lower()] = 1
-                    else:
-                        hashtag[tagElem5[i]['text'].lower()] += 1
+            tagElem4 = jsonLine['doc']['retweeted_status']['quoted_status']['entities']['hashtags']
+            for i in range(0, len(tagElem4)):
+                hashtag.append(tagElem4[i]['text'].lower())
+            language.append(jsonLine['doc']['retweeted_status']['quoted_status']['metadata']['iso_language_code'])
 
     return hashtag, language
 
-
-def process(offsetList):
-    twitterHashtag = {}
-    twitterLanguage = {}
-    # 使用字典来存储 {hashtag:出现次数},{language:出现次数}
+# parallel read and process
+def process():
+    parallelStart = datetime.now()
+    offsetList = fileSplit()
+    twitterHashtag = []
+    twitterLanguage = []
     with open(path, 'r') as file:
-        # 定位当前rank的初始指针位置
+        # position current cursor start
         startPointer = offsetList[rank]
-        # 定位当前rank的结束指针位置
+        # position the end point
         endPointer = offsetList[rank + 1]
-        print('-------------------------')
-        print('Rank %d start at: %d' % (rank, startPointer))
-        print('Rank %d  end  at: %d' % (rank, endPointer))
-        # 将指针移动到开始处
+
+        # move the cursor to the start point
         file.seek(startPointer)
         while startPointer < endPointer:
+            # read each line
             line = file.readline()
-            # 更新初始指针
+            # record current cursor point
             startPointer = file.tell()
-            #如果满足改行格式，则统计改行的数据
-            try:
-                if line.startswith('{"id'):
-                    if line.endswith('},\n'):
-                        fileData = json.loads(line[:-2])
-                        twitterHashtag, twitterLanguage = stasticData(fileData, twitterHashtag, twitterLanguage)
-                    else:
-                        fileData = json.loads(line[:-1])
-                        twitterHashtag, twitterLanguage = stasticData(fileData, twitterHashtag, twitterLanguage)
-            except Exception:
-                continue
-    return twitterHashtag, twitterLanguage
+            # if the line is in json format
+            if line.startswith('{"id'):
+                if line.endswith('},\n'):
+                    fileData = json.loads(line[:-2])
+                    twitterHashtag, twitterLanguage = stasticData(fileData, twitterHashtag, twitterLanguage)
+                else:
+                    fileData = json.loads(line[:-1])
+                    twitterHashtag, twitterLanguage = stasticData(fileData, twitterHashtag, twitterLanguage)
+    parallelEnd = datetime.now()
+    print('Rank %d parallel time: %s' % (rank, (parallelEnd-parallelStart)))
+    return Counter(twitterHashtag), Counter(twitterLanguage)
 
 
-def ranking(hashtag, language):
-    hashtagCount = Counter(hashtag)
-    hashtagTop10 = hashtagCount.most_common(10)
-    languageCount = Counter(language)
-    languageTop10 = languageCount.most_common(10)
-    return hashtagTop10, languageTop10
+def gatherResult(myHashtag, myLanguage):
+    # record the mpi communication time
+    mpiCommStart = datetime.now()
+    gatherHashtag = comm.gather(myHashtag, root=0)
+    gatherLanguage = comm.gather(myLanguage, root=0)
+    mpiCommEnd = datetime.now()
 
-
-def gatherResult(hashtagTop10, languageTop10):
-    # 收集各rank的数据，收集格式为一个list嵌套，即[[XX,xx,XX]]
-    gatherHashtag = comm.gather(hashtagTop10, root=0)
-    gatherLanguage = comm.gather(languageTop10, root=0)
-
-    # 如果是0号线程
+    # record the serial gather time in rank 0
+    serialStart = datetime.now()
     if rank == 0:
-        reverseHashtag = []
-        reverseLanguage = []
+        totalHashtag = gatherHashtag[0]
+        totalLanguage = gatherLanguage[0]
 
-        # 反转数据并倒序排序
-        for i in range(0, len(gatherHashtag)):
-            for item in gatherHashtag[i]:
-                reverseHashtag.append(item)
+        for i in range(1,len(gatherHashtag)):
+            totalHashtag += gatherHashtag[i]
 
-        for i in range(0, len(gatherLanguage)):
-            for item in gatherLanguage[i]:
-                reverseLanguage.append(item)
+        for i in range(1,len(gatherLanguage)):
+            totalLanguage += gatherLanguage[i]
 
-        # 重新统计各组数据
-        resultHashtag = {}
-        resultLanguage = {}
-        for item in reverseHashtag:
-            if item[0] not in resultHashtag.keys():
-                resultHashtag[item[0]] = item[1]
+        #sorted the rank
+        sortedTotalHashtag = Counter(totalHashtag).most_common()
+        sortedTotalLanguage = Counter(totalLanguage).most_common()
+
+        # deal with duplication
+        duplicatedHashtagIndex, duplicatedLanguageIndex = 0, 0
+
+        for i in range(11, len(sortedTotalHashtag)):
+            if sortedTotalHashtag[i] == sortedTotalHashtag[10]:
+                duplicatedHashtagIndex += 1
             else:
-                resultHashtag[item[0]] = item[1] + resultHashtag.get(item[0])
+                break
 
-        for item in reverseLanguage:
-            if item[0] not in resultLanguage.keys():
-                resultLanguage[item[0]] = item[1]
+        for i in range(11, len(sortedTotalLanguage)):
+            if sortedTotalLanguage[i] == sortedTotalLanguage[10]:
+                duplicatedLanguageIndex += 1
             else:
-                resultLanguage[item[0]] = item[1] + resultLanguage.get(item[0])
+                break
 
-        # 给字典降序排一下序
-        resultHashtag = sorted(resultHashtag.items(), key=lambda x: x[1], reverse=True)
-        resultLanguage = sorted(resultLanguage.items(), key=lambda x: x[1], reverse=True)
+        top10Hashtag = sortedTotalHashtag[:(10 + duplicatedHashtagIndex)]
+        top10Language = sortedTotalLanguage[:(10 + duplicatedLanguageIndex)]
 
-        # 输出结果
-        print('Rank %d, gather result and do sort:' % rank)
+        serialEnd = datetime.now()
+
+        #print result into output
         print('-------------------------')
-        for i in range(0, 10):
-            print('%d.#%s,%s' % (i + 1, resultHashtag[i][0], resultHashtag[i][1]))
+        for i in range(0, 10 + duplicatedHashtagIndex):
+            print('%d.#%s,%s' % (i + 1, top10Hashtag[i][0], top10Hashtag[i][1]))
         print('-------------------------')
-        for i in range(0, 10):
+        for i in range(0, 10 + duplicatedLanguageIndex):
             print('%d.%s(%s),%s' % (
-                i + 1, languageDict.get(resultLanguage[i][0]), resultLanguage[i][0], resultLanguage[i][1]))
+            i + 1, languageDict.get(top10Language[i][0]), top10Language[i][0], top10Language[i][1]))
         print('-------------------------')
+
+        print('Rank %d serial part time: %s seconds' % (rank, (serialEnd - serialStart)))
+        print('Rank %d mpi communicate time: %s seconds' % (rank, (mpiCommEnd - mpiCommStart)))
+    print('Rank %d init mpi time: %s Seconds' % (rank, (initMpiEnd - initMpiStart)))
+
 
 
 if __name__ == '__main__':
     line_index = 0
-    start = datetime.now()
-    offsetList = fileSplit()
-    twitterHashtag, twitterLanguage = process(offsetList)
-    a, b = ranking(twitterHashtag, twitterLanguage)
-    gatherResult(a, b)
-    end = datetime.now()
-    print('Rank %d Program Running Time: %s Seconds' % (rank, (end - start)))
+    twitterHashtag, twitterLanguage = process()
+    gatherResult(twitterHashtag, twitterLanguage)

@@ -1,0 +1,65 @@
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           spartan-bm064
+  Local device:         mlx5_bond_0
+  Local port:           1
+  CPCs attempted:       rdmacm
+--------------------------------------------------------------------------
+[spartan-bm064.hpc.unimelb.edu.au:55960] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55962] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55966] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55965] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55964] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55967] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55961] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55963] pml_ucx.c:223 Error: UCP worker does not support MPI_THREAD_MULTIPLE
+[spartan-bm064.hpc.unimelb.edu.au:55955] 7 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
+[spartan-bm064.hpc.unimelb.edu.au:55955] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+Rank 6 parallel time: 0:00:58.722219
+Rank 0 parallel time: 0:00:58.790648
+Rank 3 parallel time: 0:00:58.803751
+Rank 1 parallel time: 0:00:58.869943
+Rank 7 parallel time: 0:00:59.047611
+Rank 2 parallel time: 0:00:59.670389
+Rank 5 parallel time: 0:00:59.798042
+Rank 4 parallel time: 0:01:01.311626
+Rank 1 init mpi time: 0:00:00.000007 Seconds
+Rank 2 init mpi time: 0:00:00.000013 Seconds
+Rank 6 init mpi time: 0:00:00.000009 Seconds
+Rank 3 init mpi time: 0:00:00.000006 Seconds
+Rank 7 init mpi time: 0:00:00.000010 Seconds
+Rank 5 init mpi time: 0:00:00.000009 Seconds
+Rank 4 init mpi time: 0:00:00.000007 Seconds
+-------------------------
+1.#auspol,37307
+2.#coronavirus,18870
+3.#มาพ่องเพิ่งอะไร,15060
+4.#firefightaustralia,13123
+5.#oldme,12777
+6.#grammys,10136
+7.#assange,9531
+8.#sportsrorts,9475
+9.#scottyfrommarketing,8815
+10.#เป๊กผลิตโชค,8671
+-------------------------
+1.English(en),5025807
+2.Undefined(und),365068
+3.Thai(th),265244
+4.Portuguese(pt),177772
+5.Spanish(es),122250
+6.Japanese(ja),75327
+7.French(fr),70308
+8.Tagalog(tl),67867
+9.Indonesian(in),58981
+10.Korean(ko),34081
+-------------------------
+Rank 0 serial part time: 0:00:00.161378 seconds
+Rank 0 mpi communicate time: 0:00:02.566534 seconds
+Rank 0 init mpi time: 0:00:00.000008 Seconds
+
+real	1m2.138s
+user	7m52.242s
+sys	0m20.489s

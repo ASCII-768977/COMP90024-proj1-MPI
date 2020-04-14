@@ -1,0 +1,45 @@
+Rank 1 parallel time: 0:01:33.282205
+Rank 3 parallel time: 0:01:35.178476
+Rank 6 parallel time: 0:01:35.709896
+Rank 0 parallel time: 0:01:37.267367
+Rank 7 parallel time: 0:01:37.436629
+Rank 5 parallel time: 0:01:37.640571
+Rank 2 parallel time: 0:01:38.213211
+Rank 4 parallel time: 0:01:40.567106
+Rank 6 init mpi time: 0:00:00.000009 Seconds
+Rank 5 init mpi time: 0:00:00.000010 Seconds
+Rank 1 init mpi time: 0:00:00.000011 Seconds
+Rank 2 init mpi time: 0:00:00.000030 Seconds
+Rank 7 init mpi time: 0:00:00.000020 Seconds
+Rank 3 init mpi time: 0:00:00.000032 Seconds
+Rank 4 init mpi time: 0:00:00.000010 Seconds
+-------------------------
+1.#auspol,37307
+2.#coronavirus,18870
+3.#มาพ่องเพิ่งอะไร,15060
+4.#firefightaustralia,13123
+5.#oldme,12777
+6.#grammys,10136
+7.#assange,9531
+8.#sportsrorts,9475
+9.#scottyfrommarketing,8815
+10.#เป๊กผลิตโชค,8671
+-------------------------
+1.English(en),5025807
+2.Undefined(und),365068
+3.Thai(th),265244
+4.Portuguese(pt),177772
+5.Spanish(es),122250
+6.Japanese(ja),75327
+7.French(fr),70308
+8.Tagalog(tl),67867
+9.Indonesian(in),58981
+10.Korean(ko),34081
+-------------------------
+Rank 0 serial part time: 0:00:00.186860 seconds
+Rank 0 mpi communicate time: 0:00:03.365440 seconds
+Rank 0 init mpi time: 0:00:00.000020 Seconds
+
+real	1m41.813s
+user	12m46.863s
+sys	0m40.427s

@@ -3,23 +3,23 @@
 # Sat Apr 04 2020 19:20:33 GMT+1100
 
 # Partition for the job:
-#SBATCH --partition=cloud
+#SBATCH --partition=physical
 
 # Multithreaded (SMP) job: must run on one node and the cloud partition
 #SBATCH --nodes=1
 
 # The name of the job:
-#SBATCH --job-name="1n8c-test"
+#SBATCH --job-name="1n1c-test"
 
 # The project ID which this job should run under:
 #SBATCH --account="COMP90024"
 
 # Maximum number of tasks/CPU cores used by the job:
-#SBATCH --ntasks-per-node=8
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 
 # Generate output
-#SBATCH --output=1node8core.out
+#SBATCH --output=1node1core.out
 
 
 
@@ -44,7 +44,7 @@ if [ "x$SLURM_JOB_ID" == "x" ]; then
 fi
 
 # Run the job from this directory:
-cd /home/$USER/comp90024-proj1
+cd /home/$USER/comp90024-proj1/
 
 # The modules to load:
 module load Python/3.7.3-spartan_gcc-8.1.0
